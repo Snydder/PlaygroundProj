@@ -44,6 +44,12 @@ void USFCS::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentT
 
 	// Updating HUD every frame
 	USFCS::UpdateHUD();
+
+
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("Forward vector: %s"), *Owner->GetActorForwardVector().ToString()));
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Cyan, FString::Printf(TEXT("GetActorRotation: %s"), *Owner->GetActorRotation().ToString()));
+
+
 }
 
 // (BeginPlay) Getting the Array of thrusters per axis, configured in the details panel of the owning component.
