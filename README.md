@@ -27,7 +27,7 @@
 
 - Had to chase and implement a lot of solutions by myself as this is an unique project with little external guidance available other than Epic's documentation.
 
-- Enjoyed and had fun creating a spaceship
+- Practiced C++ with something I enjoyed doing.
 
 #### Room for improvement
 - Add an algorithm that automatically stops the spaceship from rotating when no input is given.
