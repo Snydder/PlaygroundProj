@@ -37,10 +37,15 @@
 - Add a selection of spaceships with different tunings.
 - Add multiplayer.
 ## Media
+
 - Thrusters in action 
 
 ![Demo gif](https://raw.githubusercontent.com/matheusperches/PlaygroundProj/main/Info/demo_video-ezgif.com-optimize.gif)
+
 - Input controller overview
 
 ![SFCS Input Diagram](https://raw.githubusercontent.com/matheusperches/PlaygroundProj/main/Info/sfcs.jpg)
 
+- Simplified Model simulation with Physics Thrusters (hidden behind the Spaceship mesh)
+
+ ![Spaceship simulation](https://raw.githubusercontent.com/matheusperches/PlaygroundProj/main/Info/behind_the_scenes.png) 
