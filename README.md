@@ -42,5 +42,5 @@
 ![Demo gif](https://raw.githubusercontent.com/matheusperches/PlaygroundProj/main/Info/demo_video-ezgif.com-optimize.gif)
 - Input controller overview
 
-![App Screenshot](https://raw.githubusercontent.com/matheusperches/matheusperches.github.io/main/sfcs.jpg)
+![SFCS Input Diagram](https://raw.githubusercontent.com/matheusperches/PlaygroundProj/main/Info/sfcs.jpg)
 
