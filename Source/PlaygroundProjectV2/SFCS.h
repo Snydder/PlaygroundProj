@@ -156,7 +156,7 @@ public:
 
 	void GetThrusterFXAndSound(UNiagaraSystem* TempNS_Thruster, USoundBase* TempSB_Thruster);
 
-	// Handling translational movement
+	// Declaring functions to handle translational movement
 	UFUNCTION()
 	void XThrust(float AxisValue);
 	UFUNCTION()
@@ -171,7 +171,7 @@ public:
 	UFUNCTION()
 	void ZRotation(float AxisValue);
 
-	// Acceleration
+	// Boost Function Declaration
 	UFUNCTION()
 	void Boost(float AxisValue);
 
@@ -183,41 +183,11 @@ public:
 	UFUNCTION()
 	void RotationBrake(float AxisValue);
 
-	// Function to set the variables (called in the RazorBackPawn.cpp file)
+	// Functions to set the Strafe Axis variables (called in the RazorBackPawn.cpp file)
 	UFUNCTION()
 	void SetStrafeFwdAxisName(FName StrafeFwdAxis)
 	{
 		StrafeFwdAxisName = StrafeFwdAxis;
-	}
-
-	UFUNCTION()
-	void SetStrafeBwdAxisName(FName StrafeBwdAxis)
-	{
-		StrafeBwdAxisName = StrafeBwdAxis;
-	}
-
-	UFUNCTION()
-	void SetStrafeLftAxisName(FName StrafeLftAxis)
-	{
-		StrafeLftAxisName = StrafeLftAxis;
-	}
-
-	UFUNCTION()
-	void SetStrafeRgtAxisName(FName StrafeRgtAxis)
-	{
-		StrafeRgtAxisName = StrafeRgtAxis;
-	}
-
-	UFUNCTION()
-	void SetStrafeUpAxisName(FName StrafeUpAxis)
-	{
-		StrafeUpAxisName = StrafeUpAxis;
-	}
-
-	UFUNCTION()
-	void SetStrafeDownAxisName(FName StrafeDownAxis)
-	{
-		StrafeDwnAxisName = StrafeDownAxis;
 	}
 
 	// Strafe axes
@@ -436,7 +406,7 @@ private:
 	float RotationBoostIncrement = 0.0f;
 	float CurrentBoostFuel = 0.0f;
 	float TranslationFinalBoost = 1.0f;
-	float RotationFinalBoost = 1.0f;
+	float RotationBoostCalculated = 1.0f;
 	float MinBoostPercentRequired = 0.0f;
 	float MinBoostRequired = 0.0f;
 	float PreviousBoostFuelAmt = 0.0f;

@@ -30,7 +30,6 @@ ARazorbackPawn::ARazorbackPawn()
 	CameraSpringArm->SetupAttachment(CubeMesh);
 	Camera->SetupAttachment(CameraSpringArm, USpringArmComponent::SocketName);
 
-
 	//Creating Flight Controller 
 	SFCS = CreateDefaultSubobject<USFCS>("SFCS");
 }
@@ -67,8 +66,6 @@ void ARazorbackPawn::BeginPlay()
 	{
 		if (CubeMesh->IsValidLowLevel())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Is ShipMesh valid: true"));
-
 			FBodyInstance* CubeMeshBodyInst = CubeMesh->GetBodyInstance();
 
 			// Setting all attributes on game start
@@ -81,17 +78,7 @@ void ARazorbackPawn::BeginPlay()
 			VisualMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 			CameraSpringArm->SetTickGroup(ETickingGroup::TG_PostPhysics);
-
 		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Is ShipMesh valid: false"));
-		}
-		UE_LOG(LogTemp, Warning, TEXT("Is ShipMesh intialized: true"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Is ShipMesh intialized: false"));
 	}
 
 	// Setting Spring Arm Properties
@@ -106,7 +93,6 @@ void ARazorbackPawn::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("(CubeMesh) Is gravity enabled: %d"), CubeMesh->IsGravityEnabled());
 	UE_LOG(LogTemp, Warning, TEXT("(VisualMesh) Is simulating physics: %d"), VisualMesh->IsSimulatingPhysics());
 	UE_LOG(LogTemp, Warning, TEXT("(VisualMesh) Is gravity enabled: %d"), VisualMesh->IsGravityEnabled());
-
 
 	if (SFCS->IsValidLowLevel())
 	{
@@ -188,7 +174,6 @@ void ARazorbackPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	InputComponent->BindAxis(TranslatBrk, this, &ARazorbackPawn::TranslationBrake);
 	InputComponent->BindAxis(RotBrk, this, &ARazorbackPawn::RotationBrake);
 	InputComponent->BindAction(NameRotationAssistMode, IE_Pressed, this, &ARazorbackPawn::RotationAssistToggle);
-	InputComponent->BindAction(NameRestartGame, IE_Pressed, this, &ARazorbackPawn::RestartGamemode);
 }
 
 bool ARazorbackPawn::ThrusterArraySweep()
@@ -335,12 +320,5 @@ void ARazorbackPawn::RotationBrake(float AxisValue)
 void ARazorbackPawn::RotationAssistToggle(FKey tempFKey)
 {
 	RotAssistKey = tempFKey;
-	//UE_LOG(LogTemp, Warning, TEXT("(Razorbackpawn) keyname: %s"), *RotAssistKey.GetFName().ToString());
 	SFCS->RotationAssistToggle();
-}
-
-void ARazorbackPawn::RestartGamemode()
-{
-	// Does not work
-	TAGM->GetGameState<ATimeAttackGameState>()->Reset();
 }

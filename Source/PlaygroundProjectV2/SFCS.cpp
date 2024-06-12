@@ -45,11 +45,6 @@ void USFCS::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentT
 	// Updating HUD every frame
 	USFCS::UpdateHUD();
 
-
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("Forward vector: %s"), *Owner->GetActorForwardVector().ToString()));
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Cyan, FString::Printf(TEXT("GetActorRotation: %s"), *Owner->GetActorRotation().ToString()));
-
-
 }
 
 // (BeginPlay) Getting the Array of thrusters per axis, configured in the details panel of the owning component.
@@ -215,12 +210,6 @@ float USFCS::CalculateThrust(float AxisAccel)
 	// Force = mass * acceleration (in m/s)
 
 	ThrustValue = Mass * (AxisAccel * 100);
-	
-	/*
-	UE_LOG(LogTemp, Warning, TEXT("(SFCS) ThrustValue: %f"), ThrustValue);
-	UE_LOG(LogTemp, Warning, TEXT("(SFCS) AxisAccel: %f"), AxisAccel);
-	UE_LOG(LogTemp, Warning, TEXT("(SFCS) Mass: %f"), Mass);
-	*/
 
 	return ThrustValue;
 }
@@ -366,7 +355,7 @@ void USFCS::InputToThrust(TArray <UPhysicsThrusterComponent*> FirstThrusterSet, 
 					FirstThrusterSet[i]->SetRelativeLocation(FirstThrusterSetPosition[i]);
 					if (isRotation)
 					{
-						FirstThrusterSet[i]->ThrustStrength = FMath::Clamp(AxisValue, 0.0f, 1.0f) * (CalculateThrust(FirstAxisAccel) * RotationFinalBoost);
+						FirstThrusterSet[i]->ThrustStrength = FMath::Clamp(AxisValue, 0.0f, 1.0f) * (CalculateThrust(FirstAxisAccel) * RotationBoostCalculated);
 					}
 					else
 					{
@@ -376,7 +365,6 @@ void USFCS::InputToThrust(TArray <UPhysicsThrusterComponent*> FirstThrusterSet, 
 					PlayThrusterVFX(FName(FirstThrusterSet[i]->GetName()));
 				}
 			}
-			
 		}
 		if (AxisValue <= 0.0f)
 		{
@@ -397,7 +385,7 @@ void USFCS::InputToThrust(TArray <UPhysicsThrusterComponent*> FirstThrusterSet, 
 					SecondThrusterSet[i]->SetRelativeLocation(SecondThrusterSetPosition[i]);
 					if (isRotation)
 					{
-						SecondThrusterSet[i]->ThrustStrength = FMath::Clamp(AxisValue, -1.0f, 0.0f) * (CalculateThrust(SecondAxisAccel) * RotationFinalBoost);
+						SecondThrusterSet[i]->ThrustStrength = FMath::Clamp(AxisValue, -1.0f, 0.0f) * (CalculateThrust(SecondAxisAccel) * RotationBoostCalculated);
 					}
 					else
 					{
@@ -417,18 +405,11 @@ void USFCS::InputToThrust(TArray <UPhysicsThrusterComponent*> FirstThrusterSet, 
 
 void USFCS::Boost(float AxisValue)
 {
-	/*
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("Fuel tank capacity: %f"), BoostFuelTank));
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Purple, FString::Printf(TEXT("(SFCS) CurrentFuel: %f"), CurrentBoostFuel));
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Purple, FString::Printf(TEXT("(SFCS) PreviousBoostFuelAmt: %f"), PreviousBoostFuelAmt));
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Purple, FString::Printf(TEXT("(SFCS) MinBoostRequired: %f"), MinBoostRequired));
-	*/
-
 	if (AxisValue != 0.0f && CurrentBoostFuel > 0.0f)
 	{
 		if (PreviousBoostFuelAmt > MinBoostRequired)
 		{
-			RotationFinalBoost = RotationBoostIncrement;
+			RotationBoostCalculated = RotationBoostIncrement;
 			TranslationFinalBoost = TranslationBoostIncrement;
 			ConsumeRecoverBoostFuel(AxisValue);
 		}
@@ -440,19 +421,16 @@ void USFCS::Boost(float AxisValue)
 	
 	else if (AxisValue == 0.0f && CurrentBoostFuel < BoostFuelTank)
 	{
-		RotationFinalBoost = 1.0f;
+		RotationBoostCalculated = 1.0f;
 		TranslationFinalBoost = 1.0f;
-		if (RAEnabled && (GetRotationAxisValue() > 0.0f || GetRotationAxisValue() < 0.0f) || !RAEnabled && GetAxisValue(RotBrk))
-		{
-			// Do nothing
-		}
-		else
+
+		// If the ship is NOT rotating, regen the boost pool.
+		if (!(RAEnabled && (GetRotationAxisValue() > 0.0f || GetRotationAxisValue() < 0.0f) || !RAEnabled && GetAxisValue(RotBrk)))
 		{
 			ConsumeRecoverBoostFuel(AxisValue);
 			PreviousBoostFuelAmt = CurrentBoostFuel;
 		}
 	}
-
 
 	// Setting bool variable for the UI
 	(AxisValue != 0.0f  && CurrentBoostFuel > MinBoostRequired) ? IsBoosting = true : IsBoosting = false;
@@ -495,7 +473,7 @@ void USFCS::TranslationBrake(float AxisValue)
 
 void USFCS::RotationBrake(float AxisValue)
 {
-	if (!RAEnabled)
+	if (!RAEnabled) // RA -> Rotation Assist (Dampening)
 	{
 		if (AxisValue != 0.0f)
 		{
@@ -509,7 +487,7 @@ void USFCS::RotationBrake(float AxisValue)
 				ConsumeRecoverBoostFuel(0.0f);
 			}
 			// Setting damping while also taking into account if the user is boosting (higher dampening)
-			CubeOwnerStaticMesh->SetAngularDamping(AngularDamping * RotationFinalBoost);
+			CubeOwnerStaticMesh->SetAngularDamping(AngularDamping * RotationBoostCalculated);
 		}
 		else
 		{
@@ -519,7 +497,7 @@ void USFCS::RotationBrake(float AxisValue)
 	else
 	{
 		// Setting damping while also taking into account if the user is boosting (higher dampening)
-		(IsBoosting) ? CubeOwnerStaticMesh->SetAngularDamping(AngularDamping * RotationFinalBoost): CubeOwnerStaticMesh->SetAngularDamping(AngularDamping);
+		(IsBoosting) ? CubeOwnerStaticMesh->SetAngularDamping(AngularDamping * RotationBoostCalculated): CubeOwnerStaticMesh->SetAngularDamping(AngularDamping);
 
 		// Comparing if the rotation rate is bigger than the threshold specified and the input is zero.
 		if ((GetRotationRateSumInDegrees() > RARotRateBoostThresholdConsume || GetRotationRateSumInDegrees() < FMath::Abs(RARotRateBoostThresholdConsume) * -1) && GetRotationAxisValue() == 0.0f)
@@ -535,16 +513,6 @@ FVector USFCS::GetForwardTranslationSpeed(bool printSpeed)
 	FVector V = CubeOwnerStaticMesh->GetPhysicsLinearVelocity();
 	FRotator R = CubeOwnerStaticMesh->GetComponentRotation();
 	V = R.UnrotateVector(V) / 100;
-
-	float XVelocity = V.X;
-	float YVelocity = V.Y;
-	float ZVelocity = V.Z;
-	if (printSpeed)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Cyan, FString::Printf(TEXT("Speed X: %.2f m/s"), XVelocity));
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Cyan, FString::Printf(TEXT("Speed Y: %.2f m/s"), YVelocity));
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Cyan, FString::Printf(TEXT("Speed Z: %.2f m/s"), ZVelocity));
-	}
 	return V;
 }
 

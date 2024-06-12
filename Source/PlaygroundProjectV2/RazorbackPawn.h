@@ -197,9 +197,6 @@ private:
 	UFUNCTION()
 	bool ThrusterArraySweep();
 
-	UFUNCTION()
-	void RestartGamemode();
-
 	// Array flags
 	bool TopThrArrayFilled = true;
 	bool BottomThrArrayFilled = true;
