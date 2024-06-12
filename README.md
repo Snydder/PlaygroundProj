@@ -31,10 +31,11 @@
 - Practiced C++ with something I enjoyed doing.
 
 #### Room for improvement
-- Add an algorithm that automatically stops the spaceship from rotating when no input is given.
 - Improve the look of the thruster VFX when firing. 
-- Make the HUD more 3d. 
-- Add a selection of spaceships with different tunings.
+- Make the HUD more 3d.
+- Add projectiles and shooting mechanics
+- Add targets to shoot
+- Add a selection of spaceships with different tunings, including a menu to choose.
 - Add multiplayer.
 ## Media
 
