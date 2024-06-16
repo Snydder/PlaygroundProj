@@ -3,7 +3,7 @@
 
 #### [Return to my Portfolio](https://github.com/matheusperches/matheusperches.github.io) 
 
-## [PlaygroundProj](https://github.com/matheusperches/PlaygroundProj)
+## [6DoF-TimeAttack](https://github.com/matheusperches/PlaygroundProj)
 
 #### Personal Unreal Engine 4 project of a six degrees of freedom spaceship.
 
