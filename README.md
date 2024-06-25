@@ -24,19 +24,12 @@
 #### Learnings
 - Learned how to use the UE4 editor
 
-- Learned about Blueprints and C++ coding 
+- Combined my prior Blueprint learnings with C++ coding
 
-- Had to chase and implement a lot of solutions by myself as this is an unique project with little external guidance available other than Epic's documentation.
+- Researched and implemented solutions by myself
 
 - Practiced C++ with something I enjoyed doing.
 
-#### Room for improvement
-- Improve the look of the thruster VFX when firing. 
-- Make the HUD more 3d.
-- Add projectiles and shooting mechanics
-- Add targets to shoot
-- Add a selection of spaceships with different tunings, including a menu to choose.
-- Add multiplayer.
 ## Media
 
 - Thrusters in action 
